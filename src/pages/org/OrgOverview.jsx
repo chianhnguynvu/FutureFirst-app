@@ -2,108 +2,126 @@ import React from "react";
 import { useQuery } from "@tanstack/react-query";
 import { base44 } from "@/api/base44Client";
 import { format } from "date-fns";
-import { Users, UserCheck, Repeat, Clock, CalendarDays, TrendingUp } from "lucide-react";
-import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer, Tooltip, CartesianGrid } from "recharts";
+import { Link } from "react-router-dom";
+import { CalendarDays, Users, Repeat, Clock, ClipboardCheck, ArrowRight, Inbox } from "lucide-react";
 import StatCard from "@/components/StatCard";
+import ReadinessCard from "@/components/org/ReadinessCard";
+import SkillsPool from "@/components/org/SkillsPool";
 
 export default function OrgOverview() {
   const { data: events = [] } = useQuery({ queryKey: ["events-all"], queryFn: () => base44.entities.Event.list("date") });
-  const { data: regs = [] } = useQuery({ queryKey: ["regs-all"], queryFn: () => base44.entities.Registration.list() });
-  const { data: announcements = [] } = useQuery({
-    queryKey: ["announcements"],
-    queryFn: () => base44.entities.Announcement.list("-created_date"),
+  const { data: regs = [] } = useQuery({ queryKey: ["regs-all"], queryFn: () => base44.entities.Registration.list("-created_date") });
+  const { data: skillRecords = [] } = useQuery({
+    queryKey: ["skill-records-all"],
+    queryFn: () => base44.entities.SkillRecord.filter({ verified: true }),
   });
 
   const volunteers = new Set(regs.map((r) => r.volunteer_email));
   const attended = regs.filter((r) => r.status === "attended");
-  const activeVolunteers = new Set(attended.map((r) => r.volunteer_email));
   const counts = {};
   attended.forEach((r) => (counts[r.volunteer_email] = (counts[r.volunteer_email] || 0) + 1));
   const repeat = Object.values(counts).filter((n) => n > 1).length;
   const hours = attended.reduce((s, r) => s + (r.hours || 0), 0);
   const decided = regs.filter((r) => r.status === "attended" || r.status === "absent").length;
   const attendanceRate = decided ? Math.round((attended.length / decided) * 100) : 0;
-  const retention = volunteers.size ? Math.round((repeat / volunteers.size) * 100) : 0;
+  const repeatRate = volunteers.size ? Math.round((repeat / volunteers.size) * 100) : 0;
   const upcoming = events.filter((e) => new Date(e.date) >= new Date() && e.status === "published");
-
-  const chart = events.slice(0, 6).map((e) => ({
-    name: e.title.split(" ").slice(0, 2).join(" "),
-    Registered: regs.filter((r) => r.event_id === e.id).length,
-    Attended: regs.filter((r) => r.event_id === e.id && r.status === "attended").length,
-  }));
+  const newApplications = regs.filter((r) => r.status === "registered").slice(0, 5);
+  const awaiting = events.filter(
+    (e) => new Date(e.date) < new Date() && regs.some((r) => r.event_id === e.id && r.status === "registered")
+  );
 
   return (
     <div>
-      <h1 className="text-2xl font-extrabold text-foreground">Overview</h1>
+      <h1 className="text-2xl font-extrabold text-foreground">Operations</h1>
       <p className="mt-1 text-sm text-muted-foreground">
-        How your volunteer community is engaging over time.
+        Everything you need to run your next event and keep volunteers coming back.
       </p>
 
       <div className="mt-6 grid grid-cols-2 gap-4 lg:grid-cols-4">
-        <StatCard label="total volunteers" value={volunteers.size} icon={Users} />
-        <StatCard label="active volunteers" value={activeVolunteers.size} icon={UserCheck} tone="green" />
-        <StatCard label="repeat volunteers" value={repeat} icon={Repeat} tone="gold" />
-        <StatCard label="volunteer retention" value={`${retention}%`} icon={TrendingUp} tone="slate" />
         <StatCard label="upcoming events" value={upcoming.length} icon={CalendarDays} />
-        <StatCard label="total registrations" value={regs.length} icon={Users} tone="slate" />
-        <StatCard label="attendance rate" value={`${attendanceRate}%`} icon={UserCheck} tone="green" />
-        <StatCard label="volunteer hours" value={hours} icon={Clock} tone="gold" />
+        <StatCard label="registered volunteers" value={volunteers.size} icon={Users} tone="slate" />
+        <StatCard label="repeat volunteer rate" value={`${repeatRate}%`} icon={Repeat} tone="green" />
+        <StatCard label="total verified hours" value={hours} icon={Clock} tone="gold" />
       </div>
 
-      <div className="mt-6 grid gap-4 lg:grid-cols-3">
-        <div className="rounded-3xl bg-card p-5 soft-shadow lg:col-span-2">
-          <h2 className="text-base font-bold text-foreground">Registrations vs attendance</h2>
-          <div className="mt-4 h-64">
-            <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={chart}>
-                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#E2E8F0" />
-                <XAxis dataKey="name" tick={{ fontSize: 11 }} interval={0} />
-                <YAxis tick={{ fontSize: 11 }} allowDecimals={false} />
-                <Tooltip />
-                <Bar dataKey="Registered" fill="#0F766E" radius={[6, 6, 0, 0]} />
-                <Bar dataKey="Attended" fill="#22C55E" radius={[6, 6, 0, 0]} />
-              </BarChart>
-            </ResponsiveContainer>
+      <section className="mt-8">
+        <div className="flex items-center justify-between">
+          <h2 className="text-lg font-bold text-foreground">Event readiness</h2>
+          <Link to="/org/events" className="flex items-center gap-1 text-sm font-semibold text-primary">
+            All events <ArrowRight className="h-4 w-4" />
+          </Link>
+        </div>
+        <div className="mt-4 grid gap-4 xl:grid-cols-2">
+          {upcoming.map((e) => (
+            <ReadinessCard key={e.id} event={e} registered={regs.filter((r) => r.event_id === e.id).length} />
+          ))}
+          {!upcoming.length && (
+            <div className="rounded-3xl bg-card p-6 text-sm text-muted-foreground soft-shadow">
+              No upcoming events yet. Create one to start recruiting volunteers.
+            </div>
+          )}
+        </div>
+      </section>
+
+      <div className="mt-8 grid gap-4 lg:grid-cols-2">
+        <div className="rounded-3xl bg-card p-5 soft-shadow">
+          <div className="flex items-center justify-between">
+            <h2 className="flex items-center gap-2 text-base font-bold text-foreground">
+              <Inbox className="h-4 w-4 text-primary" /> New volunteer applications
+            </h2>
+            <Link to="/org/members" className="text-sm font-semibold text-primary">View all</Link>
+          </div>
+          <div className="mt-3 space-y-2">
+            {newApplications.map((r) => (
+              <div key={r.id} className="flex items-center justify-between rounded-2xl bg-[#F8FAFC] px-4 py-3">
+                <div className="min-w-0">
+                  <p className="truncate text-sm font-semibold text-foreground">{r.volunteer_name || r.volunteer_email}</p>
+                  <p className="truncate text-xs text-muted-foreground">{r.event_title}</p>
+                </div>
+                <span className="ml-3 shrink-0 rounded-full bg-accent px-2.5 py-1 text-[11px] font-semibold text-primary">
+                  {r.event_date ? format(new Date(r.event_date), "d MMM") : "New"}
+                </span>
+              </div>
+            ))}
+            {!newApplications.length && (
+              <p className="text-sm text-muted-foreground">No new applications right now.</p>
+            )}
           </div>
         </div>
 
         <div className="rounded-3xl bg-card p-5 soft-shadow">
-          <h2 className="text-base font-bold text-foreground">Recent announcements</h2>
-          <div className="mt-3 space-y-3">
-            {announcements.slice(0, 4).map((a) => (
-              <div key={a.id}>
-                <p className="text-sm font-bold text-foreground">{a.title}</p>
-                <p className="line-clamp-2 text-xs text-muted-foreground">{a.body}</p>
-                <p className="mt-1 text-[11px] text-muted-foreground">
-                  {a.created_date ? format(new Date(a.created_date), "d MMM") : ""}
-                </p>
-              </div>
-            ))}
-            {!announcements.length && (
-              <p className="text-sm text-muted-foreground">No announcements yet.</p>
-            )}
+          <div className="flex items-center justify-between">
+            <h2 className="flex items-center gap-2 text-base font-bold text-foreground">
+              <ClipboardCheck className="h-4 w-4 text-primary" /> Attendance & retention
+            </h2>
+            <Link to="/org/attendance" className="text-sm font-semibold text-primary">Verify</Link>
+          </div>
+          <div className="mt-4 grid grid-cols-2 gap-3">
+            <div className="rounded-2xl bg-[#F8FAFC] p-4">
+              <p className="text-2xl font-extrabold text-[#15803D]">{attendanceRate}%</p>
+              <p className="text-xs text-muted-foreground">attendance rate</p>
+            </div>
+            <div className="rounded-2xl bg-[#F8FAFC] p-4">
+              <p className="text-2xl font-extrabold text-primary">{repeat}</p>
+              <p className="text-xs text-muted-foreground">volunteers returned</p>
+            </div>
+          </div>
+          <div className="mt-3 rounded-2xl bg-[#FEF3C7] px-4 py-3">
+            <p className="text-sm font-semibold text-[#B45309]">
+              {awaiting.length
+                ? `${awaiting.length} past event${awaiting.length === 1 ? "" : "s"} awaiting verification`
+                : "All past events verified"}
+            </p>
+            <p className="mt-0.5 text-xs text-[#B45309]/80">
+              Verifying participation issues certificates and unlocks volunteer skills.
+            </p>
           </div>
         </div>
       </div>
 
-      <div className="mt-6 rounded-3xl bg-card p-5 soft-shadow">
-        <h2 className="text-base font-bold text-foreground">Upcoming events</h2>
-        <div className="mt-3 divide-y divide-border">
-          {upcoming.map((e) => (
-            <div key={e.id} className="flex flex-wrap items-center justify-between gap-2 py-3">
-              <div>
-                <p className="font-semibold text-foreground">{e.title}</p>
-                <p className="text-xs text-muted-foreground">
-                  {format(new Date(e.date), "EEE d MMM")} · {e.location}
-                </p>
-              </div>
-              <p className="text-sm text-muted-foreground">
-                {regs.filter((r) => r.event_id === e.id).length}/{e.capacity} registered
-              </p>
-            </div>
-          ))}
-          {!upcoming.length && <p className="py-3 text-sm text-muted-foreground">No upcoming events.</p>}
-        </div>
+      <div className="mt-4">
+        <SkillsPool records={skillRecords} />
       </div>
     </div>
   );
