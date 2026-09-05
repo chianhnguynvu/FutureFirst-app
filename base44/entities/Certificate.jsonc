@@ -1,0 +1,32 @@
+{
+  "name": "Certificate",
+  "type": "object",
+  "properties": {
+    "volunteer_email": {
+      "type": "string"
+    },
+    "volunteer_name": {
+      "type": "string"
+    },
+    "event_title": {
+      "type": "string"
+    },
+    "organisation_name": {
+      "type": "string"
+    },
+    "hours": {
+      "type": "number"
+    },
+    "issued_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "verification_code": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "volunteer_email",
+    "event_title"
+  ]
+}

@@ -1,0 +1,31 @@
+{
+  "name": "Organisation",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string"
+    },
+    "description": {
+      "type": "string"
+    },
+    "logo_url": {
+      "type": "string"
+    },
+    "verified": {
+      "type": "boolean",
+      "default": false
+    },
+    "location": {
+      "type": "string"
+    },
+    "contact_email": {
+      "type": "string"
+    },
+    "coordinator_email": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "name"
+  ]
+}

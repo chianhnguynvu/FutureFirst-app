@@ -1,12 +1,34 @@
 import { Toaster } from "@/components/ui/toaster"
 import { QueryClientProvider } from '@tanstack/react-query'
 import { queryClientInstance } from '@/lib/query-client'
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
 import PageNotFound from './lib/PageNotFound';
 import { AuthProvider, useAuth } from '@/lib/AuthContext';
 import UserNotRegisteredError from '@/components/UserNotRegisteredError';
 import ScrollToTop from './components/ScrollToTop';
+import ProtectedRoute from '@/components/ProtectedRoute';
 // Add page imports here
+import Login from '@/pages/Login';
+import Register from '@/pages/Register';
+import ForgotPassword from '@/pages/ForgotPassword';
+import ResetPassword from '@/pages/ResetPassword';
+import VolunteerLayout from '@/components/VolunteerLayout';
+import OrgLayout from '@/components/OrgLayout';
+import Onboarding from '@/pages/Onboarding';
+import Home from '@/pages/Home';
+import Discover from '@/pages/Discover';
+import EventDetail from '@/pages/EventDetail';
+import Learn from '@/pages/Learn';
+import ModuleDetail from '@/pages/ModuleDetail';
+import Impact from '@/pages/Impact';
+import Profile from '@/pages/Profile';
+import Notifications from '@/pages/Notifications';
+import OrgOverview from '@/pages/org/OrgOverview';
+import OrgEvents from '@/pages/org/OrgEvents';
+import OrgEventForm from '@/pages/org/OrgEventForm';
+import OrgMembers from '@/pages/org/OrgMembers';
+import OrgAttendance from '@/pages/org/OrgAttendance';
+import OrgAnnouncements from '@/pages/org/OrgAnnouncements';
 
 const AuthenticatedApp = () => {
   const { isLoadingAuth, isLoadingPublicSettings, authError, navigateToLogin } = useAuth();
@@ -34,7 +56,35 @@ const AuthenticatedApp = () => {
   // Render the main app
   return (
     <Routes>
-      {/* Add your page Route elements here */}
+      <Route path="/login" element={<Login />} />
+      <Route path="/register" element={<Register />} />
+      <Route path="/forgot-password" element={<ForgotPassword />} />
+      <Route path="/reset-password" element={<ResetPassword />} />
+
+      <Route element={<ProtectedRoute unauthenticatedElement={<Navigate to="/login" replace />} />}>
+        <Route path="/onboarding" element={<Onboarding />} />
+
+        <Route element={<VolunteerLayout />}>
+          <Route path="/" element={<Home />} />
+          <Route path="/discover" element={<Discover />} />
+          <Route path="/event/:id" element={<EventDetail />} />
+          <Route path="/learn" element={<Learn />} />
+          <Route path="/learn/:id" element={<ModuleDetail />} />
+          <Route path="/impact" element={<Impact />} />
+          <Route path="/profile" element={<Profile />} />
+          <Route path="/notifications" element={<Notifications />} />
+        </Route>
+
+        <Route path="/org" element={<OrgLayout />}>
+          <Route index element={<OrgOverview />} />
+          <Route path="events" element={<OrgEvents />} />
+          <Route path="events/:id" element={<OrgEventForm />} />
+          <Route path="members" element={<OrgMembers />} />
+          <Route path="attendance" element={<OrgAttendance />} />
+          <Route path="announcements" element={<OrgAnnouncements />} />
+        </Route>
+      </Route>
+
       <Route path="*" element={<PageNotFound />} />
     </Routes>
   );

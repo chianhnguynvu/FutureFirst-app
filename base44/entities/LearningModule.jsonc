@@ -1,0 +1,82 @@
+{
+  "name": "LearningModule",
+  "type": "object",
+  "properties": {
+    "title": {
+      "type": "string"
+    },
+    "cause": {
+      "type": "string"
+    },
+    "image_url": {
+      "type": "string"
+    },
+    "read_minutes": {
+      "type": "number",
+      "default": 3
+    },
+    "summary_60s": {
+      "type": "string"
+    },
+    "why_matters": {
+      "type": "string"
+    },
+    "who_affected": {
+      "type": "string"
+    },
+    "child_rights": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "key_facts": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "myth": {
+      "type": "string"
+    },
+    "fact": {
+      "type": "string"
+    },
+    "what_can_i_do": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "sources": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "quiz": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "question": {
+            "type": "string"
+          },
+          "options": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "answer_index": {
+            "type": "number"
+          }
+        }
+      }
+    }
+  },
+  "required": [
+    "title",
+    "cause"
+  ]
+}

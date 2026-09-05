@@ -1,0 +1,43 @@
+{
+  "name": "Registration",
+  "type": "object",
+  "properties": {
+    "event_id": {
+      "type": "string"
+    },
+    "event_title": {
+      "type": "string"
+    },
+    "event_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "volunteer_email": {
+      "type": "string"
+    },
+    "volunteer_name": {
+      "type": "string"
+    },
+    "hours": {
+      "type": "number",
+      "default": 0
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "registered",
+        "attended",
+        "absent",
+        "cancelled"
+      ],
+      "default": "registered"
+    },
+    "cause": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "event_id",
+    "volunteer_email"
+  ]
+}

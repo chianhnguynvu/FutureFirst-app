@@ -1,0 +1,103 @@
+{
+  "name": "VolunteerProfile",
+  "type": "object",
+  "properties": {
+    "user_email": {
+      "type": "string"
+    },
+    "full_name": {
+      "type": "string"
+    },
+    "photo_url": {
+      "type": "string"
+    },
+    "bio": {
+      "type": "string"
+    },
+    "university": {
+      "type": "string"
+    },
+    "study_area": {
+      "type": "string"
+    },
+    "location": {
+      "type": "string"
+    },
+    "interests": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "skills": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "availability": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "preferred_event_type": {
+      "type": "string",
+      "enum": [
+        "In person",
+        "Online",
+        "Either"
+      ],
+      "default": "Either"
+    },
+    "preferred_location": {
+      "type": "string"
+    },
+    "volunteer_experience": {
+      "type": "string"
+    },
+    "cv_url": {
+      "type": "string"
+    },
+    "cv_summary": {
+      "type": "string"
+    },
+    "volunteer_hours": {
+      "type": "number",
+      "default": 0
+    },
+    "events_completed": {
+      "type": "number",
+      "default": 0
+    },
+    "learning_score": {
+      "type": "number",
+      "default": 0
+    },
+    "streak": {
+      "type": "number",
+      "default": 0
+    },
+    "achievements": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "profile_visibility": {
+      "type": "string",
+      "enum": [
+        "organisations",
+        "private"
+      ],
+      "default": "organisations"
+    },
+    "onboarding_complete": {
+      "type": "boolean",
+      "default": false
+    }
+  },
+  "required": [
+    "user_email"
+  ]
+}

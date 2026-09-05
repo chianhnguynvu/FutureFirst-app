@@ -1,0 +1,34 @@
+{
+  "name": "Announcement",
+  "type": "object",
+  "properties": {
+    "title": {
+      "type": "string"
+    },
+    "body": {
+      "type": "string"
+    },
+    "organisation_name": {
+      "type": "string"
+    },
+    "audience": {
+      "type": "string",
+      "enum": [
+        "all",
+        "event",
+        "interest"
+      ],
+      "default": "all"
+    },
+    "target_event_id": {
+      "type": "string"
+    },
+    "target_interest": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "title",
+    "body"
+  ]
+}

@@ -1,0 +1,117 @@
+{
+  "name": "Event",
+  "type": "object",
+  "properties": {
+    "title": {
+      "type": "string"
+    },
+    "organisation_name": {
+      "type": "string"
+    },
+    "organisation_id": {
+      "type": "string"
+    },
+    "verified": {
+      "type": "boolean",
+      "default": true
+    },
+    "description": {
+      "type": "string"
+    },
+    "why_it_matters": {
+      "type": "string"
+    },
+    "cause": {
+      "type": "string"
+    },
+    "date": {
+      "type": "string",
+      "format": "date"
+    },
+    "start_time": {
+      "type": "string"
+    },
+    "end_time": {
+      "type": "string"
+    },
+    "location": {
+      "type": "string"
+    },
+    "event_type": {
+      "type": "string",
+      "enum": [
+        "In person",
+        "Online"
+      ],
+      "default": "In person"
+    },
+    "availability_tag": {
+      "type": "string",
+      "enum": [
+        "Weekday morning",
+        "Weekday afternoon",
+        "Weekday evening",
+        "Weekend"
+      ]
+    },
+    "capacity": {
+      "type": "number",
+      "default": 20
+    },
+    "spots_taken": {
+      "type": "number",
+      "default": 0
+    },
+    "required_skills": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "volunteer_tasks": {
+      "type": "string"
+    },
+    "volunteer_hours": {
+      "type": "number",
+      "default": 3
+    },
+    "expected_impact": {
+      "type": "string"
+    },
+    "humanitarian_issue": {
+      "type": "string"
+    },
+    "child_rights_topic": {
+      "type": "string"
+    },
+    "safety_info": {
+      "type": "string"
+    },
+    "eligibility": {
+      "type": "string"
+    },
+    "image_url": {
+      "type": "string"
+    },
+    "registration_deadline": {
+      "type": "string",
+      "format": "date"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "draft",
+        "published",
+        "closed",
+        "cancelled",
+        "completed"
+      ],
+      "default": "published"
+    }
+  },
+  "required": [
+    "title",
+    "cause",
+    "date"
+  ]
+}

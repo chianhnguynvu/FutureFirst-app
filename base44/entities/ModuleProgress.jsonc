@@ -1,0 +1,38 @@
+{
+  "name": "ModuleProgress",
+  "type": "object",
+  "properties": {
+    "module_id": {
+      "type": "string"
+    },
+    "module_title": {
+      "type": "string"
+    },
+    "cause": {
+      "type": "string"
+    },
+    "volunteer_email": {
+      "type": "string"
+    },
+    "progress": {
+      "type": "number",
+      "default": 0
+    },
+    "completed": {
+      "type": "boolean",
+      "default": false
+    },
+    "quiz_score": {
+      "type": "number",
+      "default": 0
+    },
+    "quiz_total": {
+      "type": "number",
+      "default": 0
+    }
+  },
+  "required": [
+    "module_id",
+    "volunteer_email"
+  ]
+}
