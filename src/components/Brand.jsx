@@ -1,29 +1,36 @@
 import React from "react";
+import { Image } from "@/components/ui/image";
+
+export const BRAND_SYMBOL_URL = "https://media.base44.com/images/public/6a9bb7fcd1f66f2fc54c3e8b/f89296fd5_Logo3Symboltransparent.png";
+export const BRAND_HORIZONTAL_URL = "https://media.base44.com/images/public/6a9bb7fcd1f66f2fc54c3e8b/06a9a2fd0_Logo1Horizontal.png";
+export const BRAND_APP_ICON_URL = "https://media.base44.com/images/public/6a9bb7fcd1f66f2fc54c3e8b/64450875f_Logo2Appiconlight.png";
 
 export function BrandMark({ className = "w-9 h-9" }) {
   return (
-    <div className={`${className} rounded-2xl bg-primary flex items-center justify-center shrink-0`}>
-      <svg viewBox="0 0 32 32" className="w-5 h-5" fill="none" aria-hidden="true">
-        <path d="M9 24V10a4 4 0 0 1 4-4h10" stroke="white" strokeWidth="3.2" strokeLinecap="round" />
-        <path d="M9 16h9" stroke="#22C55E" strokeWidth="3.2" strokeLinecap="round" />
-      </svg>
-    </div>
+    <Image
+      src={BRAND_SYMBOL_URL}
+      alt="FutureFirst"
+      fittingType="fit"
+      className={`${className} shrink-0`}
+    />
   );
 }
 
 export default function Brand({ showTagline = false, size = "md" }) {
+  const width = size === "lg" ? "w-56" : "w-40";
   return (
-    <div className="flex items-center gap-2.5">
-      <BrandMark className={size === "lg" ? "w-12 h-12" : "w-9 h-9"} />
-      <div className="leading-tight">
-        <p className={size === "lg" ? "text-2xl" : "text-lg"}>
-          <span className="font-light text-foreground">Future</span>
-          <span className="font-extrabold text-primary">First</span>
-        </p>
-        {showTagline && (
-          <p className="text-xs text-muted-foreground">Volunteer Today. Change Future</p>
-        )}
-      </div>
+    <div className="flex flex-col items-start gap-1">
+      <Image
+        src={BRAND_HORIZONTAL_URL}
+        alt="FutureFirst — Volunteer Today. Change Future"
+        fittingType="fit"
+        originWidth={1024}
+        originHeight={300}
+        className={`${width} h-auto`}
+      />
+      {showTagline && (
+        <p className="text-xs text-muted-foreground">Volunteer Today. Change Future</p>
+      )}
     </div>
   );
 }
