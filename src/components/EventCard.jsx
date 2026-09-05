@@ -59,6 +59,16 @@ export default function EventCard({ event, match }) {
             {spots} spots left
           </span>
         </div>
+        {!!(event.skills_practised || []).length && (
+          <div className="mt-1 rounded-2xl bg-accent/70 p-3">
+            <p className="text-[11px] font-bold uppercase tracking-wide text-primary">
+              Build {event.skills_practised.length} transferable skills
+            </p>
+            <p className="mt-0.5 text-xs font-medium text-foreground">
+              {event.skills_practised.slice(0, 3).join(" • ")}
+            </p>
+          </div>
+        )}
         {!!(event.required_skills || []).length && (
           <div className="flex flex-wrap gap-1.5 pt-1">
             {event.required_skills.map((s) => (

@@ -21,6 +21,8 @@ import EventDetail from '@/pages/EventDetail';
 import Learn from '@/pages/Learn';
 import ModuleDetail from '@/pages/ModuleDetail';
 import Impact from '@/pages/Impact';
+import SkillPassport from '@/pages/SkillPassport';
+import RoleSelect from '@/pages/RoleSelect';
 import Profile from '@/pages/Profile';
 import Notifications from '@/pages/Notifications';
 import OrgOverview from '@/pages/org/OrgOverview';
@@ -63,6 +65,7 @@ const AuthenticatedApp = () => {
 
       <Route element={<ProtectedRoute unauthenticatedElement={<Navigate to="/login" replace />} />}>
         <Route path="/onboarding" element={<Onboarding />} />
+        <Route path="/role" element={<RoleSelect />} />
 
         <Route element={<VolunteerLayout />}>
           <Route path="/" element={<Home />} />
@@ -71,6 +74,7 @@ const AuthenticatedApp = () => {
           <Route path="/learn" element={<Learn />} />
           <Route path="/learn/:id" element={<ModuleDetail />} />
           <Route path="/impact" element={<Impact />} />
+          <Route path="/passport" element={<SkillPassport />} />
           <Route path="/profile" element={<Profile />} />
           <Route path="/notifications" element={<Notifications />} />
         </Route>

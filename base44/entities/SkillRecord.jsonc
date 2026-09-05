@@ -1,5 +1,5 @@
 {
-  "name": "Certificate",
+  "name": "SkillRecord",
   "type": "object",
   "properties": {
     "volunteer_email": {
@@ -7,6 +7,19 @@
     },
     "volunteer_name": {
       "type": "string"
+    },
+    "skill": {
+      "type": "string"
+    },
+    "source": {
+      "type": "string",
+      "enum": [
+        "event",
+        "learning",
+        "self",
+        "cv"
+      ],
+      "default": "event"
     },
     "event_id": {
       "type": "string"
@@ -17,31 +30,27 @@
     "organisation_name": {
       "type": "string"
     },
-    "hours": {
-      "type": "number"
-    },
     "role": {
       "type": "string"
     },
-    "skills_demonstrated": {
-      "type": "array",
-      "items": {
-        "type": "string"
-      }
+    "hours": {
+      "type": "number",
+      "default": 0
     },
-    "feedback": {
-      "type": "string"
+    "verified": {
+      "type": "boolean",
+      "default": false
     },
-    "issued_date": {
+    "verified_date": {
       "type": "string",
       "format": "date"
     },
-    "verification_code": {
+    "note": {
       "type": "string"
     }
   },
   "required": [
     "volunteer_email",
-    "event_title"
+    "skill"
   ]
 }

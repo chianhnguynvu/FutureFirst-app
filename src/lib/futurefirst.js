@@ -94,6 +94,11 @@ export function matchEvent(event, profile, history = [], completedCauses = []) {
     score += 5;
     reasons.push(`You completed a learning module on this topic.`);
   }
+  const buildMatch = (event.skills_practised || []).filter((s) => (profile.skills_to_build || []).includes(s));
+  if (buildMatch.length) {
+    score += 10;
+    reasons.push(`This event helps you practise ${buildMatch.slice(0, 2).join(" and ")}.`);
+  }
   return { score: Math.min(99, score), reasons };
 }
 

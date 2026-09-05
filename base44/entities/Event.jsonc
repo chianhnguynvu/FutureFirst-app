@@ -68,6 +68,23 @@
         "type": "string"
       }
     },
+    "skills_practised": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "contact_person": {
+      "type": "string"
+    },
+    "involves_children": {
+      "type": "boolean",
+      "default": false
+    },
+    "wwcc_required": {
+      "type": "boolean",
+      "default": false
+    },
     "volunteer_tasks": {
       "type": "string"
     },

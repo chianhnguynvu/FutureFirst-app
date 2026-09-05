@@ -12,8 +12,10 @@ import {
   useRegistrations,
   useModules,
   useProgress,
+  useSkillRecords,
 } from "@/hooks/useVolunteer";
 import { greeting, matchEvent, levelFor } from "@/lib/futurefirst";
+import { nextBadge } from "@/lib/skills";
 
 export default function Home() {
   const { data: profile, isLoading } = useProfile();
@@ -21,9 +23,12 @@ export default function Home() {
   const { data: regs = [] } = useRegistrations();
   const { data: modules = [] } = useModules();
   const { data: progress = [] } = useProgress();
+  const { data: records = [] } = useSkillRecords();
+  const badge = nextBadge(records);
 
   if (isLoading || !profile) return <div className="p-6 text-muted-foreground">Loading…</div>;
   if (!profile.onboarding_complete) return <Navigate to="/onboarding" replace />;
+  if (!profile.platform_role) return <Navigate to="/role" replace />;
 
   const registeredIds = regs.filter((r) => r.status !== "cancelled").map((r) => r.event_id);
   const completedCauses = progress.filter((p) => p.completed).map((p) => p.cause);
@@ -141,6 +146,36 @@ export default function Home() {
           </Link>
         </section>
       )}
+
+      {/* Continue your growth */}
+      <section className="mt-6">
+        <div className="flex items-center justify-between">
+          <h2 className="text-base font-bold text-foreground">Continue your growth</h2>
+          <Link to="/passport" className="text-sm font-medium text-primary">Skill Passport</Link>
+        </div>
+        <Link to="/passport" className="mt-3 block rounded-3xl bg-card p-4 soft-shadow">
+          {badge ? (
+            <>
+              <p className="font-bold text-foreground">{badge.label}</p>
+              <p className="text-xs text-muted-foreground">
+                {badge.count} / {badge.required} verified {badge.skill.toLowerCase()} experiences
+              </p>
+              <Progress value={badge.percent} className="mt-3 h-2" />
+              <p className="mt-2 text-sm font-semibold text-primary">
+                {badge.remaining} more {badge.skill.toLowerCase()} experience
+                {badge.remaining === 1 ? "" : "s"} to unlock
+              </p>
+            </>
+          ) : (
+            <>
+              <p className="font-bold text-foreground">{records.length} verified skill experiences</p>
+              <p className="mt-1 text-xs text-muted-foreground">
+                Every completed event adds transferable evidence to your passport.
+              </p>
+            </>
+          )}
+        </Link>
+      </section>
 
       {/* Recommended */}
       <section className="mt-7">

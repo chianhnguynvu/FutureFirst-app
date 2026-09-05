@@ -3,7 +3,8 @@ import { useSearchParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { base44 } from "@/api/base44Client";
 import { format } from "date-fns";
-import { Check, X, Award } from "lucide-react";
+import { Check, X, Award, BadgeCheck } from "lucide-react";
+import VerifyParticipationDialog from "@/components/org/VerifyParticipationDialog";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -17,6 +18,7 @@ export default function OrgAttendance() {
   const refresh = useRefresh();
   const [eventId, setEventId] = useState(params.get("event") || "");
   const [busy, setBusy] = useState(false);
+  const [verifying, setVerifying] = useState(null);
 
   const { data: events = [] } = useQuery({ queryKey: ["events-all"], queryFn: () => base44.entities.Event.list("-date") });
   const { data: regs = [] } = useQuery({ queryKey: ["regs-all"], queryFn: () => base44.entities.Registration.list() });
@@ -104,6 +106,9 @@ export default function OrgAttendance() {
               <Button variant="outline" className="h-11 rounded-2xl" disabled={busy} onClick={() => mark(r, "absent")}>
                 <X className="mr-1 h-4 w-4" /> Absent
               </Button>
+              <Button className="h-11 rounded-2xl" disabled={busy} onClick={() => setVerifying(r)}>
+                <BadgeCheck className="mr-1 h-4 w-4" /> Verify participation
+              </Button>
               {r.status === "attended" && (
                 <Button className="h-11 rounded-2xl" disabled={busy} onClick={() => certify(r)}>
                   <Award className="mr-1 h-4 w-4" /> Issue certificate
@@ -112,6 +117,17 @@ export default function OrgAttendance() {
             </div>
           </div>
         ))}
+        {verifying && (
+          <VerifyParticipationDialog
+            registration={verifying}
+            event={event}
+            open
+            onOpenChange={(v) => !v && setVerifying(null)}
+            onVerified={() =>
+              refresh(["regs-all", "registrations", "profile", "certificates", "skill-records"])
+            }
+          />
+        )}
         {!list.length && (
           <p className="rounded-3xl bg-card p-6 text-sm text-muted-foreground soft-shadow">
             No volunteers registered for this event yet.

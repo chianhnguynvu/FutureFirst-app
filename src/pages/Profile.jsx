@@ -4,6 +4,7 @@ import { base44 } from "@/api/base44Client";
 import { format } from "date-fns";
 import {
   Pencil, LogOut, ShieldCheck, Eye, FileText, GraduationCap, MapPin, LayoutDashboard, Upload,
+  BadgeCheck, Repeat,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -12,6 +13,7 @@ import { Switch } from "@/components/ui/switch";
 import { Progress } from "@/components/ui/progress";
 import ChipSelect from "@/components/ChipSelect";
 import { CAUSES, SKILLS, AVAILABILITY, levelFor } from "@/lib/futurefirst";
+import { TRANSFERABLE_SKILLS, CAREER_INTERESTS } from "@/lib/skills";
 import { useProfile, useRegistrations, useProgress, useRefresh } from "@/hooks/useVolunteer";
 
 export default function Profile() {
@@ -40,6 +42,8 @@ export default function Profile() {
       interests: profile.interests || [],
       skills: profile.skills || [],
       availability: profile.availability || [],
+      skills_to_build: profile.skills_to_build || [],
+      career_interests: profile.career_interests || [],
     });
     setEditing(true);
   };
@@ -138,6 +142,22 @@ export default function Profile() {
             <ChipSelect options={SKILLS} value={form.skills} onChange={(v) => setForm({ ...form, skills: v })} />
           </div>
           <div>
+            <p className="mb-2 text-sm font-semibold">Skills you want to build</p>
+            <ChipSelect
+              options={TRANSFERABLE_SKILLS}
+              value={form.skills_to_build}
+              onChange={(v) => setForm({ ...form, skills_to_build: v })}
+            />
+          </div>
+          <div>
+            <p className="mb-2 text-sm font-semibold">Career interests (optional)</p>
+            <ChipSelect
+              options={CAREER_INTERESTS}
+              value={form.career_interests}
+              onChange={(v) => setForm({ ...form, career_interests: v })}
+            />
+          </div>
+          <div>
             <p className="mb-2 text-sm font-semibold">Availability</p>
             <ChipSelect
               options={AVAILABILITY}
@@ -212,6 +232,8 @@ export default function Profile() {
 
       <Card title="Causes you care about"><Tags items={profile.interests} /></Card>
       <Card title="Skills"><Tags items={profile.skills} /></Card>
+      <Card title="Skills you want to build"><Tags items={profile.skills_to_build} /></Card>
+      <Card title="Career interests"><Tags items={profile.career_interests} /></Card>
       <Card title="Availability"><Tags items={profile.availability} /></Card>
 
       <Card title="Volunteer experience">
@@ -279,10 +301,24 @@ export default function Profile() {
       </Card>
 
       <Link
-        to="/org"
+        to="/passport"
         className="mt-4 flex min-h-[52px] items-center gap-2 rounded-3xl bg-card px-5 font-semibold text-primary soft-shadow"
       >
+        <BadgeCheck className="h-4 w-4" /> My Skill Passport
+      </Link>
+
+      <Link
+        to="/org"
+        className="mt-3 flex min-h-[52px] items-center gap-2 rounded-3xl bg-card px-5 font-semibold text-primary soft-shadow"
+      >
         <LayoutDashboard className="h-4 w-4" /> Organisation dashboard
+      </Link>
+
+      <Link
+        to="/role"
+        className="mt-3 flex min-h-[52px] items-center gap-2 rounded-3xl bg-card px-5 font-semibold text-primary soft-shadow"
+      >
+        <Repeat className="h-4 w-4" /> Switch role
       </Link>
 
       <Button

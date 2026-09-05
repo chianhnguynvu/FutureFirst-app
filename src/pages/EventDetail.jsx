@@ -13,6 +13,7 @@ import { Badge } from "@/components/ui/badge";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import WhyThisMatch from "@/components/WhyThisMatch";
+import SafeToVolunteer from "@/components/SafeToVolunteer";
 import { matchEvent } from "@/lib/futurefirst";
 import { useProfile, useRegistrations, useModules, useProgress, useRefresh } from "@/hooks/useVolunteer";
 
@@ -158,6 +159,24 @@ export default function EventDetail() {
           </div>
           <p className="mt-2 text-xs">No experience needed — training is provided on the day.</p>
         </Section>
+
+        {!!(event.skills_practised || []).length && (
+          <Section title="Skills you'll practise">
+            <p className="text-sm">
+              Transferable skills you can build here — each one is added to your Skill Passport once your
+              organiser verifies participation.
+            </p>
+            <div className="mt-3 flex flex-wrap gap-2">
+              {event.skills_practised.map((s) => (
+                <span key={s} className="rounded-full bg-accent px-3 py-1.5 text-xs font-semibold text-primary">
+                  {s}
+                </span>
+              ))}
+            </div>
+          </Section>
+        )}
+
+        <SafeToVolunteer event={event} />
 
         <section className="mt-6 rounded-3xl bg-card p-5 soft-shadow">
           <p className="flex items-center gap-2 text-sm font-bold text-foreground">

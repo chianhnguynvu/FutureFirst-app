@@ -1,24 +1,22 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { format } from "date-fns";
-import { Clock, CalendarCheck, HeartHandshake, BookOpen, Flame, Award, ArrowRight } from "lucide-react";
+import { Clock, CalendarCheck, HeartHandshake, BookOpen, Flame, Award, ArrowRight, BadgeCheck } from "lucide-react";
 import StatCard from "@/components/StatCard";
 import WhyThisMatch from "@/components/WhyThisMatch";
+import BuildNextCard from "@/components/BuildNextCard";
 import { ACHIEVEMENTS, matchEvent } from "@/lib/futurefirst";
-import { useProfile, useRegistrations, useProgress, useEvents } from "@/hooks/useVolunteer";
-import { useQuery } from "@tanstack/react-query";
-import { base44 } from "@/api/base44Client";
+import {
+  useProfile, useRegistrations, useProgress, useEvents, useSkillRecords, useCertificates,
+} from "@/hooks/useVolunteer";
 
 export default function Impact() {
   const { data: profile } = useProfile();
   const { data: regs = [] } = useRegistrations();
   const { data: progress = [] } = useProgress();
   const { data: events = [] } = useEvents();
-  const { data: certificates = [] } = useQuery({
-    queryKey: ["certificates", profile?.user_email],
-    enabled: !!profile?.user_email,
-    queryFn: () => base44.entities.Certificate.filter({ volunteer_email: profile.user_email }),
-  });
+  const { data: certificates = [] } = useCertificates();
+  const { data: records = [] } = useSkillRecords();
 
   if (!profile) return <div className="p-6 text-muted-foreground">Loading…</div>;
 
@@ -37,10 +35,25 @@ export default function Impact() {
 
   return (
     <div className="px-5 pt-6">
-      <h1 className="text-2xl font-extrabold text-foreground">Your impact</h1>
+      <h1 className="text-2xl font-extrabold text-foreground">My Impact & Growth</h1>
       <p className="mt-1 text-sm text-muted-foreground">
-        A record of everything you've contributed — kept in one place, for you.
+        The event ends. The volunteer journey shouldn't — here's everything you've built so far.
       </p>
+
+      <Link
+        to="/passport"
+        className="mt-4 flex min-h-[56px] items-center gap-3 rounded-3xl bg-card px-5 soft-shadow"
+      >
+        <BadgeCheck className="h-5 w-5 text-primary" />
+        <span className="text-sm font-bold text-foreground">
+          My Skill Passport · {records.length} verified experience{records.length === 1 ? "" : "s"}
+        </span>
+        <ArrowRight className="ml-auto h-4 w-4 text-muted-foreground" />
+      </Link>
+
+      <div className="mt-4">
+        <BuildNextCard />
+      </div>
 
       <div className="mt-5 grid grid-cols-2 gap-3">
         <StatCard label="volunteer hours" value={profile.volunteer_hours || 0} icon={Clock} />
@@ -139,7 +152,19 @@ export default function Impact() {
                   {c.organisation_name} · {c.hours} hours ·{" "}
                   {c.issued_date ? format(new Date(c.issued_date), "d MMM yyyy") : ""}
                 </p>
-                <p className="mt-2 font-mono text-xs text-muted-foreground">Verification: {c.verification_code}</p>
+                {!!(c.skills_demonstrated || []).length && (
+                  <div className="mt-2 flex flex-wrap gap-1.5">
+                    {c.skills_demonstrated.map((s) => (
+                      <span key={s} className="rounded-full bg-accent px-2.5 py-1 text-[11px] font-semibold text-primary">
+                        {s}
+                      </span>
+                    ))}
+                  </div>
+                )}
+                <p className="mt-2 flex items-center gap-1 text-xs font-semibold text-[#166534]">
+                  <BadgeCheck className="h-3.5 w-3.5" /> Verified impact certificate
+                </p>
+                <p className="mt-1 font-mono text-xs text-muted-foreground">Certificate ID: {c.verification_code}</p>
               </div>
             ))}
           </div>

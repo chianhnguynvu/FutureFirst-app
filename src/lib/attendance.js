@@ -36,14 +36,54 @@ export async function setAttendance(registration, status) {
   });
 }
 
-export async function issueCertificate(registration, organisationName) {
+export async function issueCertificate(registration, organisationName, extra = {}) {
   return base44.entities.Certificate.create({
     volunteer_email: registration.volunteer_email,
     volunteer_name: registration.volunteer_name,
+    event_id: registration.event_id,
     event_title: registration.event_title,
     organisation_name: organisationName || "FutureFirst Partner",
-    hours: registration.hours,
+    hours: extra.hours ?? registration.hours,
+    role: extra.role,
+    skills_demonstrated: extra.skills || [],
+    feedback: extra.feedback,
     issued_date: new Date().toISOString().slice(0, 10),
-    verification_code: `FF-${registration.id.slice(-6).toUpperCase()}`,
+    verification_code: `FF-${new Date().getFullYear()}-${registration.id.slice(-5).toUpperCase()}`,
+  });
+}
+
+/**
+ * Organiser verification: confirms attendance + hours, records verified skill
+ * experiences and issues the event certificate.
+ */
+export async function verifyParticipation(registration, event, { hours, role, skills = [], feedback }) {
+  const verifiedHours = Number(hours) || 0;
+  await base44.entities.Registration.update(registration.id, { hours: verifiedHours });
+  await setAttendance({ ...registration, hours: verifiedHours }, "attended");
+
+  if (skills.length) {
+    await base44.entities.SkillRecord.bulkCreate(
+      skills.map((skill) => ({
+        volunteer_email: registration.volunteer_email,
+        volunteer_name: registration.volunteer_name,
+        skill,
+        source: "event",
+        event_id: registration.event_id,
+        event_title: registration.event_title,
+        organisation_name: event?.organisation_name,
+        role,
+        hours: verifiedHours,
+        verified: true,
+        verified_date: new Date().toISOString().slice(0, 10),
+        note: feedback,
+      }))
+    );
+  }
+
+  return issueCertificate({ ...registration, hours: verifiedHours }, event?.organisation_name, {
+    hours: verifiedHours,
+    role,
+    skills,
+    feedback,
   });
 }

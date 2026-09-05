@@ -35,6 +35,26 @@
         "type": "string"
       }
     },
+    "skills_to_build": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "career_interests": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "platform_role": {
+      "type": "string",
+      "enum": [
+        "volunteer",
+        "organiser",
+        "both"
+      ]
+    },
     "availability": {
       "type": "array",
       "items": {

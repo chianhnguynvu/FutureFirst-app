@@ -10,6 +10,7 @@ import {
 } from "@/components/ui/select";
 import ChipSelect from "@/components/ChipSelect";
 import { CAUSES, SKILLS, AVAILABILITY } from "@/lib/futurefirst";
+import { TRANSFERABLE_SKILLS } from "@/lib/skills";
 import { useRefresh } from "@/hooks/useVolunteer";
 
 const empty = {
@@ -26,6 +27,10 @@ const empty = {
   availability_tag: "Weekend",
   capacity: 20,
   required_skills: [],
+  skills_practised: [],
+  contact_person: "",
+  involves_children: false,
+  wwcc_required: false,
   volunteer_tasks: "",
   volunteer_hours: 4,
   expected_impact: "",
@@ -162,9 +167,36 @@ export default function OrgEventForm() {
           />
         </Field>
 
-        <Field label="Required skills">
+        <Field label="Required skills (volunteers should already have these)">
           <ChipSelect options={SKILLS} value={form.required_skills || []} onChange={(v) => set("required_skills", v)} />
         </Field>
+
+        <Field label="Skills volunteers will build / practise">
+          <ChipSelect
+            options={TRANSFERABLE_SKILLS}
+            value={form.skills_practised || []}
+            onChange={(v) => set("skills_practised", v)}
+          />
+        </Field>
+
+        <div className="grid gap-5 md:grid-cols-2">
+          <Field label="Contact person for volunteers">
+            <Input className="h-12 rounded-2xl" value={form.contact_person} onChange={(e) => set("contact_person", e.target.value)} />
+          </Field>
+          <Field label="Child safety">
+            <ChipSelect
+              options={["Involves children", "Working With Children Check required"]}
+              value={[
+                ...(form.involves_children ? ["Involves children"] : []),
+                ...(form.wwcc_required ? ["Working With Children Check required"] : []),
+              ]}
+              onChange={(v) => {
+                set("involves_children", v.includes("Involves children"));
+                set("wwcc_required", v.includes("Working With Children Check required"));
+              }}
+            />
+          </Field>
+        </div>
 
         <Field label="Volunteer tasks">
           <Textarea rows={2} className="rounded-2xl" value={form.volunteer_tasks} onChange={(e) => set("volunteer_tasks", e.target.value)} />

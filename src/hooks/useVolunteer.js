@@ -50,6 +50,24 @@ export function useProgress() {
   });
 }
 
+export function useSkillRecords() {
+  const { data: me } = useMe();
+  return useQuery({
+    queryKey: ["skill-records", me?.email],
+    enabled: !!me?.email,
+    queryFn: () => base44.entities.SkillRecord.filter({ volunteer_email: me.email }),
+  });
+}
+
+export function useCertificates() {
+  const { data: me } = useMe();
+  return useQuery({
+    queryKey: ["certificates", me?.email],
+    enabled: !!me?.email,
+    queryFn: () => base44.entities.Certificate.filter({ volunteer_email: me.email }),
+  });
+}
+
 export function useRefresh() {
   const qc = useQueryClient();
   return (keys) => keys.forEach((k) => qc.invalidateQueries({ queryKey: [k] }));
