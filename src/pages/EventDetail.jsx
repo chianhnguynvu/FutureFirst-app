@@ -77,8 +77,17 @@ export default function EventDetail() {
 
   return (
     <div className="pb-8">
-      <div className="relative h-56 w-full bg-muted">
-        {event.image_url && <Image src={event.image_url} alt={event.title} className="h-56 w-full" />}
+      <div className="relative aspect-video max-h-72 w-full overflow-hidden bg-muted">
+        {event.image_url && (
+          <Image
+            src={event.image_url}
+            alt={event.title}
+            fittingType="fill"
+            focalPointX={0.5}
+            focalPointY={0.5}
+            className="absolute inset-0 h-full w-full"
+          />
+        )}
         <button
           onClick={() => navigate(-1)}
           className="absolute left-4 top-4 flex h-11 w-11 items-center justify-center rounded-2xl bg-white/95"

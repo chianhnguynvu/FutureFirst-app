@@ -12,8 +12,17 @@ export default function EventCard({ event, match }) {
       to={`/event/${event.id}`}
       className="block overflow-hidden rounded-3xl bg-card soft-shadow transition-transform active:scale-[0.99]"
     >
-      <div className="relative h-40 w-full bg-muted">
-        {event.image_url && <Image src={event.image_url} alt={event.title} className="h-40 w-full" />}
+      <div className="relative aspect-video w-full overflow-hidden bg-muted">
+        {event.image_url && (
+          <Image
+            src={event.image_url}
+            alt={event.title}
+            fittingType="fill"
+            focalPointX={0.5}
+            focalPointY={0.5}
+            className="absolute inset-0 h-full w-full"
+          />
+        )}
         <div className="absolute left-3 top-3 flex gap-2">
           <Badge className="bg-white/95 text-foreground hover:bg-white">{event.cause}</Badge>
           {event.verified && (
